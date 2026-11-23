@@ -1,0 +1,21 @@
+team: vibotcode
+description: VibotCode 团队 AI 开发资源仓库
+repo: git@github.com:PinkRainFlowerStone/vibotcode-teamai.git
+provider: github
+language: zh
+autoUpdate: false
+sharing:
+  namespaceMerge: intersect
+  recall:
+    enabled: true
+  docs:
+    localDir: ./.teamai/docs
+  gitExclude:
+    enabled: true
+sessions:
+  publish:
+    attended: ask
+    unattended: off
+workflows:
+  driver: local
+

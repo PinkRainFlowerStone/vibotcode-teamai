@@ -1,0 +1,32 @@
+schemaVersion: v1alpha1
+name: vibotcode-mini-program-self-check
+description: Inspect a mini-program change against optional task context and produce a platform-aware verification result.
+inputs:
+  task: string
+defaults:
+  inputs: { task: "" }
+steps:
+  - id: check
+    prompt: |
+      Review the current workspace changes as the implementing mini-program engineer.
+      Implementation task or acceptance context: "{{ inputs.task }}"
+
+      When task is empty, infer intent only from repository evidence and disclose the limitation. Confirm the actual
+      mini-program platform, native or cross-platform framework, language and base-library target before applying rules.
+      For WeChat-native changes, inspect touched app/page/component registration, package ownership, lifecycle and page-stack
+      cleanup, WXML/WXSS boundaries, setData behavior, component contracts, platform API availability, request/login/storage,
+      privacy/permission declarations, duplicate actions and environment/release compatibility. Determine architecture from the
+      target repository rather than a team reference template. Only when that repository uses WebView to carry H5 business,
+      also trace allowed origins, entry URL validation, message/share schemas, encoding, credential handoff and return behavior.
+      For other targets, use their
+      repository and platform evidence instead of imposing WeChat APIs. Run the smallest relevant existing checks and separate
+      command results, developer-tool results, preview/trial or real-device results, gaps and residual risks. Do not modify files.
+    agent: mini-program-engineer
+    output:
+      summary: string
+      actual_commands: [{ command: string, result: passed | failed | blocked, evidence: string }]
+      platform_verification: [{ check: string, result: passed | failed | blocked | not_run, evidence: string }]
+      not_run: [{ check: string, reason: string }]
+      fixes_needed: [string]
+      residual_risks: [string]
+      ready: boolean

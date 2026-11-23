@@ -1,0 +1,15 @@
+schemaVersion: v1alpha1
+name: vibotcode-backend-review
+description: Review a VibotCode backend change with an evidence-based P1/P2/P3 contract.
+inputs: { scope: string, requirements: string, context: string }
+defaults:
+  inputs: { scope: "current workspace diff", requirements: "", context: "" }
+steps:
+  - id: review
+    prompt: Review {{ inputs.scope }}. Treat "{{ inputs.requirements }}" as explicit requirements and "{{ inputs.context }}" as supplemental context; verify both against repository evidence. Read AGENTS.md, Maven modules, project documents, tests, configuration, the selected diff, and adjacent code. Return only evidence-backed P1/P2/P3 findings, then verification gaps and residual risks. Every finding must include the file, an exact line/range/symbol location, triggering scenario, impact, and actionable repair direction. Do not modify files.
+    agent: backend-reviewer
+    output:
+      findings: [{ severity: P1 | P2 | P3, file: string, location: string, scenario: string, impact: string, direction: string }]
+      verification_gaps: [string]
+      residual_risks: [string]
+      verdict: pass | changes_required

@@ -1,0 +1,34 @@
+schemaVersion: v1alpha1
+name: vibotcode-backend-development
+description: Plan, implement, and verify one scoped VibotCode backend change on an isolated workflow branch.
+inputs: { task: string }
+workspace: new
+steps:
+  - id: plan
+    prompt: Analyze the backend task "{{ inputs.task }}". Read repository instructions, Maven modules, project documents, configuration keys, tests, and adjacent code. Do not modify files. Return the target service, scope, contracts, consistency risks, planned files, and verification commands.
+    agent: backend-engineer
+    output:
+      summary: string
+      service: string
+      files: [string]
+      risks: [string]
+      verification: [string]
+  - id: implement
+    needs: [plan]
+    prompt: Implement the backend task "{{ inputs.task }}" in the target repository. Follow the plan summary "{{ steps.plan.outputs.summary }}", but re-check the code before editing. Keep Java 8 compatibility, preserve project boundaries, keep the change scoped, and report changed files and implementation risks. Do not claim verification that was not actually run.
+    agent: backend-engineer
+    output:
+      summary: string
+      files: [string]
+      risks: [string]
+  - id: verify
+    needs: [implement]
+    prompt: Verify the implementation for "{{ inputs.task }}" on this workflow branch. Read the final diff and repository build configuration. Run the smallest relevant existing checks from the plan, expanding only when risk justifies it. Do not modify files. Report every command actually run with its result and evidence, every relevant check not run with a reason, residual risks, and whether the branch is ready for human inspection and merge.
+    agent: backend-engineer
+    output:
+      summary: string
+      actual_commands: [{ command: string, result: passed | failed | blocked, evidence: string }]
+      not_run: [{ check: string, reason: string }]
+      residual_risks: [string]
+      ready: boolean
+

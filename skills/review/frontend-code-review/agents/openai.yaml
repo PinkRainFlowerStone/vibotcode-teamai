@@ -1,0 +1,6 @@
+interface:
+  display_name: "VibotCode Frontend Code Review"
+  short_description: "Review PC, mobile, and mini-program frontend changes"
+  default_prompt: "Use $frontend-code-review to review committed changes on the current branch against pre by default, honor any explicit scope, infer the applicable PC, mobile, or mini-program profile, and do not modify code unless I explicitly request fixes."
+policy:
+  allow_implicit_invocation: true

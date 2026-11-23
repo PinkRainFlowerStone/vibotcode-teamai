@@ -1,0 +1,33 @@
+schemaVersion: v1alpha1
+name: vibotcode-frontend-review
+description: Review an incremental VibotCode frontend change with optional scope, requirements, and context inputs; each defaults to an empty string so an input-free start keeps the standard origin/pre review behavior.
+inputs:
+  scope: string
+  requirements: string
+  context: string
+defaults:
+  inputs: { scope: "", requirements: "", context: "" }
+steps:
+  - id: review
+    prompt: |
+      Use $frontend-code-review to perform a read-only review of the requested change.
+      Requested review scope: "{{ inputs.scope }}"
+      Requirements, acceptance criteria, API mapping, or PR description: "{{ inputs.requirements }}"
+      Additional task context or risk notes: "{{ inputs.context }}"
+
+      When the requested review scope is non-empty, treat it as the explicit scope and it must override the skill's
+      origin/pre default. When it is empty, resolve the standard origin/pre baseline from the skill. Use every non-empty
+      requirements or context value as evidence for the Spec & Behavior axis, but verify it against repository evidence
+      where possible. When both are empty, continue the Team Standards and Runtime Risk axes and disclose the missing
+      specification context and any conclusions it limits. These inputs do not authorize file modifications.
+
+      Read the repository and selected platform context, classify the target as PC Web, mobile Web, or mini program, and
+      return only evidence-backed incremental findings in the skill's required format followed by material pending
+      confirmations and remaining validation gaps. Do not modify files.
+    agent: frontend-reviewer
+    output:
+      summary: string
+      findings: [{ severity: MustFix | ShouldFix | NiceToHave, confidence: high | medium, file: string, line: number, attribution: introduced | modified | made-reachable | worsened, rule: string, evidence: string, impact: string, correction: string }]
+      questions: [string]
+      gaps: [string]
+      verdict: pass | changes_required

@@ -1,0 +1,123 @@
+version: 1
+projects:
+  - id: vibotcode
+    name: VibotCode Workspace
+    description: 权益营销前后端项目的工作区级共享上下文
+    resources:
+      knowledge: [common, vibotcode]
+      skills: [common, vibotcode]
+      learnings: []
+      agents: [common]
+      docs: [vibotcode]
+      workflows: [common]
+  - id: frontend-pc
+    name: 前端 PC 端
+    description: 桌面管理、运营、配置和数据工作台类前端
+    resources:
+      knowledge: [common, vibotcode, frontend, frontend-pc, review]
+      skills: [common, vibotcode, frontend, review]
+      learnings: [frontend-pc]
+      agents: [common, frontend, review]
+      docs: [vibotcode, frontend, frontend-pc, review]
+      workflows: [common, frontend, review]
+  - id: frontend-mobile
+    name: 前端移动端
+    description: 移动 Web、H5、WebView、活动页和消费端旅程
+    resources:
+      knowledge: [common, vibotcode, frontend, frontend-mobile, review]
+      skills: [common, vibotcode, frontend, review]
+      learnings: [frontend-mobile]
+      agents: [common, frontend, review]
+      docs: [vibotcode, frontend, frontend-mobile, review]
+      workflows: [common, frontend, review]
+  - id: frontend-mini-program
+    name: 前端小程序
+    description: 以微信原生小程序为已校准基线；其他小程序或跨端目标仅复用平台中立风险判断
+    resources:
+      knowledge: [common, vibotcode, frontend-mini-program, review]
+      skills: [common, vibotcode, frontend-mini-program, review]
+      learnings: []
+      agents: [common, frontend-mini-program, review]
+      docs: [vibotcode, frontend-mini-program, review]
+      workflows: [common, frontend-mini-program, review]
+  - id: center-platform
+    name: 营销管理平台底座服务
+    description: 站点、账号、组织、权限、字典、配置、文件与平台公共能力
+    resources:
+      knowledge: [common, vibotcode, backend, backend-review, center-platform]
+      skills: [common, vibotcode, backend, backend-review]
+      learnings: [backend]
+      agents: [common, backend, backend-review]
+      docs: [vibotcode, backend, center-platform]
+      workflows: [common, backend, backend-review]
+  - id: center-gateway
+    name: 营销管理平台网关
+    description: WebFlux 统一入口、路由、鉴权、登录态与请求上下文传递
+    resources:
+      knowledge: [common, vibotcode, backend, backend-review, center-gateway]
+      skills: [common, vibotcode, backend, backend-review]
+      learnings: [backend]
+      agents: [common, backend, backend-review]
+      docs: [vibotcode, backend, center-gateway]
+      workflows: [common, backend, backend-review]
+  - id: center-point
+    name: 积分管理体系
+    description: 积分规则、账户明细、发放订单、预算、预警与补偿任务
+    resources:
+      knowledge: [common, vibotcode, backend, backend-review, center-point]
+      skills: [common, vibotcode, backend, backend-review]
+      learnings: [backend]
+      agents: [common, backend, backend-review]
+      docs: [vibotcode, backend, center-point]
+      workflows: [common, backend, backend-review]
+  - id: center-vip
+    name: 会员成长体系
+    description: 会员等级、成长值、成长任务、会员权益与资产同步
+    resources:
+      knowledge: [common, vibotcode, backend, backend-review, center-vip]
+      skills: [common, vibotcode, backend, backend-review]
+      learnings: [backend]
+      agents: [common, backend, backend-review]
+      docs: [vibotcode, backend, center-vip]
+      workflows: [common, backend, backend-review]
+  - id: center-manage
+    name: 营销活动管理平台
+    description: 营销活动、画布、客群标签协作、触达、报表与资格批处理
+    resources:
+      knowledge: [common, vibotcode, backend, backend-review, center-manage]
+      skills: [common, vibotcode, backend, backend-review]
+      learnings: [backend]
+      agents: [common, backend, backend-review]
+      docs: [vibotcode, backend, center-manage]
+      workflows: [common, backend, backend-review]
+  - id: center-mall
+    name: 权益商城服务
+    description: 商城活动、商品、订单、优惠券、库存预算、履约与内容运营
+    resources:
+      knowledge: [common, vibotcode, backend, backend-review, center-mall]
+      skills: [common, vibotcode, backend, backend-review]
+      learnings: [backend, center-mall]
+      agents: [common, backend, backend-review]
+      docs: [vibotcode, backend, center-mall]
+      workflows: [common, backend, backend-review]
+  - id: center-chain
+    name: 权益供应链服务
+    description: 商户门店、供应商、商品权益、订单履约、核销、售后与结算
+    resources:
+      knowledge: [common, vibotcode, backend, backend-review, center-chain]
+      skills: [common, vibotcode, backend, backend-review]
+      learnings: [backend]
+      agents: [common, backend, backend-review]
+      docs: [vibotcode, backend, center-chain]
+      workflows: [common, backend, backend-review]
+  - id: xxl-job
+    name: XXL-JOB 调度平台
+    description: 调度中心与执行器核心，负责任务注册、触发、回调、重试和日志
+    resources:
+      knowledge: [common, vibotcode, backend, backend-review, xxl-job]
+      skills: [common, vibotcode, backend, backend-review]
+      learnings: [backend, xxl-job]
+      agents: [common, backend, backend-review]
+      docs: [vibotcode, backend, xxl-job]
+      workflows: [common, backend, backend-review]
+

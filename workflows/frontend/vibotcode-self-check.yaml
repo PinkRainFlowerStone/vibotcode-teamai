@@ -1,0 +1,30 @@
+schemaVersion: v1alpha1
+name: vibotcode-self-check
+description: Inspect a VibotCode frontend change against an optional implementation task that defaults to an empty string, and produce a verification plan before completion.
+inputs:
+  task: string
+defaults:
+  inputs: { task: "" }
+steps:
+  - id: check
+    prompt: |
+      Review the current workspace changes as the implementing frontend engineer.
+      Implementation task or acceptance context: "{{ inputs.task }}"
+
+      When the task is non-empty, use it as the intended behavior and acceptance anchor. When it is empty, infer intent
+      only from the selected changes and repository evidence, and disclose that missing task context limits completeness.
+      Read repository instructions, package scripts and the matching PC/mobile platform profile. Check contract fields,
+      permission or guest identity flow, loading/error states, component and style boundaries, HTML/storage/browser API
+      risks, compatibility targets, and public/shared blast radius only when touched by the change. Run the smallest
+      relevant existing checks. Distinguish automated commands, manual verification, checks not run, fixes still needed,
+      and residual risks. Do not modify files.
+    agent: frontend-engineer
+    output:
+      summary: string
+      actual_commands: [{ command: string, result: passed | failed | blocked, evidence: string }]
+      manual_verification: [{ check: string, result: passed | failed | blocked | not_run, evidence: string }]
+      not_run: [{ check: string, reason: string }]
+      fixes_needed: [string]
+      residual_risks: [string]
+      ready: boolean
+

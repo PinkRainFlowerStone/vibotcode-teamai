@@ -1,0 +1,27 @@
+schemaVersion: v1alpha1
+name: vibotcode-backend-self-check
+description: Inspect the current backend change against an optional task context and produce a risk-based verification result before completion.
+inputs:
+  task: string
+defaults:
+  inputs: { task: "" }
+steps:
+  - id: check
+    prompt: |
+      Review the current workspace changes as the implementing backend engineer.
+      Implementation task or acceptance context: "{{ inputs.task }}"
+
+      When the task is non-empty, use it as the intended behavior and acceptance anchor. When it is empty, infer intent
+      only from the selected changes and repository evidence, and disclose that missing task context limits completeness.
+      Read repository instructions and Maven configuration, identify contract, security, transaction, data, concurrency,
+      async and regression risks, run the smallest relevant existing checks, and distinguish actual commands, checks not
+      run, fixes still needed, and residual risks. Do not modify files.
+    agent: backend-engineer
+    output:
+      summary: string
+      actual_commands: [{ command: string, result: passed | failed | blocked, evidence: string }]
+      not_run: [{ check: string, reason: string }]
+      fixes_needed: [string]
+      residual_risks: [string]
+      ready: boolean
+

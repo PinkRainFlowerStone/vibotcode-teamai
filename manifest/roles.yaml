@@ -1,0 +1,35 @@
+version: 1
+roles:
+  - id: common
+    description: 只接收团队通用工程规范的成员
+    resources:
+      knowledge: [common, vibotcode]
+      skills: [common, vibotcode]
+      agents: [common]
+      docs: [vibotcode]
+      workflows: [common]
+  - id: frontend
+    description: VibotCode 前端开发人员，按 PC、移动端或小程序平台交付能力
+    resources:
+      knowledge: [common, vibotcode, frontend, frontend-pc, frontend-mobile, frontend-mini-program]
+      skills: [common, vibotcode, frontend, frontend-mini-program]
+      agents: [frontend, frontend-mini-program]
+      docs: [vibotcode, frontend, frontend-pc, frontend-mobile, frontend-mini-program]
+      workflows: [frontend, frontend-mini-program]
+  - id: backend
+    description: VibotCode Java 后端开发人员
+    resources:
+      knowledge: [common, vibotcode, backend, center-platform, center-gateway, center-point, center-vip, center-manage, center-mall, center-chain, xxl-job]
+      skills: [common, vibotcode, backend]
+      agents: [backend]
+      docs: [vibotcode, backend, center-platform, center-gateway, center-point, center-vip, center-manage, center-mall, center-chain, xxl-job]
+      workflows: [backend]
+  - id: review
+    description: 负责 VibotCode 变更审查与质量门禁；平台或后端项目交集决定评审能力
+    resources:
+      knowledge: [common, vibotcode, frontend, frontend-pc, frontend-mobile, frontend-mini-program, backend, review, backend-review, center-platform, center-gateway, center-point, center-vip, center-manage, center-mall, center-chain, xxl-job]
+      skills: [common, vibotcode, review, backend-review]
+      agents: [review, backend-review]
+      docs: [vibotcode, frontend, frontend-pc, frontend-mobile, frontend-mini-program, backend, review, center-platform, center-gateway, center-point, center-vip, center-manage, center-mall, center-chain, xxl-job]
+      workflows: [review, backend-review]
+
