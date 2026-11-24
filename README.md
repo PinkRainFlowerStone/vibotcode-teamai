@@ -4,11 +4,11 @@
 
 当前基线：
 
-- TeamAI CLI：`0.22.0`
+- TeamAI CLI：官方正式版 `0.30.0`
 - 团队仓库：`git@github.com:PinkRainFlowerStone/vibotcode-teamai.git`
-- 资源合并策略：`sharing.namespaceMerge: intersect`
+- 资源合并策略：官方 `0.30.0` 的 Role 与 Project 并集
 - 工作流驱动：`local`
-- 自动更新：关闭，由成员显式执行 `teamai pull`
+- 自动更新：关闭，由成员显式执行 `teamai.cmd pull`（Linux/macOS 使用 `teamai pull`）
 
 ## 1. 核心使用模型
 
@@ -17,16 +17,18 @@
 1. 一个 `role`：决定允许使用的能力上限。
 2. 一个 `project`：决定当前业务领域或前端运行平台。
 
-TeamAI 只投递角色与项目命名空间的交集。角色不能代替项目，项目也不能绕过角色授权。
+TeamAI `0.30.0` 会合并当前 Role 与 Project 声明的 namespace。Role 负责职责能力，Project 负责平台或服务上下文；两者不是交集授权，因此清单必须避免把另一领域的 Skill、Agent 或 Workflow 放入 Project。
 
 ### 角色
 
 | Role | 用途 |
 | --- | --- |
 | `common` | 通用上下文、项目接入与变更验证，不提供领域 Agent 或 Workflow |
-| `frontend` | 前端开发，按 PC、移动 Web、小程序平台加载开发能力 |
+| `frontend` | PC 与移动 Web 前端开发 |
+| `frontend-mini-program` | 微信原生小程序开发；不加载 Vue 3 Web 实现能力 |
 | `backend` | 后端开发，按实际后端服务加载开发能力 |
-| `review` | 前端或后端代码审查，不加载实现类 Skill |
+| `frontend-review` | PC、移动 Web、微信小程序前端代码审查 |
+| `backend-review` | Java 后端代码审查与质量门禁 |
 
 ### 项目与平台
 
@@ -51,12 +53,12 @@ TeamAI 只投递角色与项目命名空间的交集。角色不能代替项目�
 | 通用项目梳理 | `common` | `vibotcode` | 项目接入、上下文梳理、变更验证 |
 | PC 前端开发 | `frontend` | `frontend-pc` | Vue 3 开发、前端 Agent、前端自检 |
 | 移动 Web 开发 | `frontend` | `frontend-mobile` | Vue 3 开发、移动端约束、前端自检 |
-| 微信小程序开发 | `frontend` | `frontend-mini-program` | 原生小程序开发、平台 Agent、小程序自检 |
+| 微信小程序开发 | `frontend-mini-program` | `frontend-mini-program` | 原生小程序开发、平台 Agent、小程序自检 |
 | 后端开发 | `backend` | 对应后端项目 | 后端开发、项目约束、开发及自检 Workflow |
-| 前端审查 | `review` | 对应前端平台 | 前端代码审查 Skill、Reviewer、审查 Workflow |
-| 后端审查 | `review` | 对应后端项目 | 后端代码审查 Skill、Reviewer、审查 Workflow |
+| 前端审查 | `frontend-review` | 对应前端平台 | 前端代码审查 Skill、Reviewer、审查 Workflow |
+| 后端审查 | `backend-review` | 对应后端项目 | 后端代码审查 Skill、Reviewer、审查 Workflow |
 
-`scripts/setup-workspace.ps1` 会拒绝非法组合。直接使用原始 CLI 选择错误组合时，交集策略不会授予另一领域的 Skill、Agent、Rule、Doc 或 Workflow，但 TeamAI CLI `0.22.0` 的 Learnings 固定使用 union，因此不要把错误组合当作安全隔离方式。
+`scripts/setup-workspace.ps1` 会拒绝非法组合。由于官方 `0.30.0` 使用 Role 与 Project 并集，小程序开发、前端审查和后端审查均使用独立 Role，Project 只放平台或服务上下文，避免 Web、小程序、开发与审查执行能力跨域投递。
 
 ## 2. 环境准备
 
@@ -64,19 +66,19 @@ TeamAI 只投递角色与项目命名空间的交集。角色不能代替项目�
 
 - Git 和团队 GitHub SSH 权限
 - Node.js 20 或更高版本，以及 npm
-- TeamAI CLI `0.22.0`
+- TeamAI CLI `0.30.0`
 - 支持的 Agent 工具，例如 Codex
 - 完整使用 GitHub 发布能力时，需要 GitHub CLI `gh`，并完成 `gh auth login`
 
 安装并确认版本：
 
 ```powershell
-npm install -g teamai-cli@0.22.0
-teamai --version
+npm install -g teamai-cli@0.30.0
+teamai.cmd --version
 gh auth status
 ```
 
-如果安装后提示找不到 `teamai`，先重新打开终端，并确认 npm 全局可执行目录已加入 `PATH`。团队当前锁定 `0.22.0`。不要单独升级个人 CLI；升级前必须在团队仓库完成兼容性验证。
+如果 Windows PowerShell 提示执行 `teamai.ps1` 被禁止，统一使用 `teamai.cmd`，例如 `teamai.cmd pull`。团队当前锁定官方 `0.30.0`，不要单独升级个人 CLI。
 
 Windows 成员首次接入前必须启用 Git 长路径支持，否则 TeamAI 数据目录叠加 Skill、Rule 的多级目录后可能导致 clone 或 checkout 失败：
 
@@ -91,66 +93,63 @@ git config --get core.longpaths
 
 所有命令都应在目标业务仓库根目录执行。
 
-### 推荐：使用接入脚本
+### 推荐：手工 CLI 接入
 
-先在本地取得本仓库，然后进入业务仓库执行：
+进入业务仓库执行。`teamai.cmd init` 会把团队仓库克隆到 TeamAI 自己的数据目录，普通成员不需要另外克隆本仓库：
 
-```powershell
-git clone git@github.com:PinkRainFlowerStone/vibotcode-teamai.git <vibotcode-teamai目录>
-```
+官方 `0.30.0` 只校验 Role 和 Project 是否分别存在，不校验两者是否属于本手册定义的业务组合，并会直接合并两侧资源。手工接入时必须从“合法组合”表选取；接入后立即用 `roles list` 和 `projects list` 复核。`scripts/setup-workspace.ps1` 仍是唯一会自动拒绝非法组合的辅助入口。
 
 ```powershell
 cd <业务仓库目录>
-& "<vibotcode-teamai目录>\scripts\setup-workspace.ps1" `
-  -TeamRepo "git@github.com:PinkRainFlowerStone/vibotcode-teamai.git" `
-  -Role frontend `
-  -Project frontend-pc `
-  -Agent codex `
-  -Provider github
+teamai.cmd init "git@github.com:PinkRainFlowerStone/vibotcode-teamai.git" --provider github --role frontend --project frontend-pc --agent codex
+teamai.cmd pull
+teamai.cmd doctor
 ```
 
 常用参数示例：
 
 ```powershell
 # 移动 Web 开发
--Role frontend -Project frontend-mobile
+--role frontend --project frontend-mobile
 
 # 微信原生小程序开发
--Role frontend -Project frontend-mini-program
+--role frontend-mini-program --project frontend-mini-program
 
 # center-platform 后端开发
--Role backend -Project center-platform
+--role backend --project center-platform
 
 # PC 前端代码审查
--Role review -Project frontend-pc
+--role frontend-review --project frontend-pc
 
 # center-platform 后端代码审查
--Role review -Project center-platform
+--role backend-review --project center-platform
 ```
 
-`-Agent` 默认值为 `codex`，也可传入 TeamAI CLI 支持的其他 Agent ID；多个 Agent 使用逗号分隔。`-Provider` 默认值为 `github`，支持自动创建 Pull Request；只需要拉取资源且没有 GitHub CLI 登录时，可以传入 `-Provider git`，但该工作区不能通过 TeamAI 自动创建 Pull Request。脚本会完成初始化、Agent 启用、角色选择、项目选择、资源拉取和 `doctor` 检查，并在选择非法组合时直接终止。
+`--agent` 可传入 TeamAI CLI 支持的 Agent ID，多个 Agent 可逗号分隔。`--provider github` 支持 GitHub 集成；只需要拉取资源且没有 GitHub CLI 登录时，可改为 `--provider git`，但不能通过 TeamAI 自动创建 Pull Request。
+
+仍可使用脚本完成同样流程；如果 PowerShell 禁止执行 `.ps1`，不要修改执行策略，改用上面的手工命令。
 
 ### 手工接入
 
 无法使用脚本时，执行等价命令：
 
 ```powershell
-teamai init git@github.com:PinkRainFlowerStone/vibotcode-teamai.git `
+teamai.cmd init git@github.com:PinkRainFlowerStone/vibotcode-teamai.git `
   --provider github `
   --role frontend `
   --project frontend-pc `
   --agent codex
 
-teamai pull
-teamai doctor
+teamai.cmd pull
+teamai.cmd doctor
 ```
 
 接入后确认当前选择：
 
 ```powershell
-teamai roles list
-teamai projects list
-teamai status
+teamai.cmd roles list
+teamai.cmd projects list
+teamai.cmd status
 ```
 
 ## 4. Codex 必做配置
@@ -160,21 +159,21 @@ TeamAI 的文件已投递，不代表 Rules 已经在 Codex 会话中生效。Ru
 1. 在 Codex 中信任当前项目。
 2. 在 Codex 的 `/hooks` 或设置页中信任 TeamAI Hooks。
 3. 完成信任后新建一个 Codex 会话。
-4. 在新会话中执行一次 `teamai doctor` 并检查提示。
+4. 在新会话中执行一次 `teamai.cmd doctor` 并检查提示。
 
-`teamai doctor` 返回成功，只说明文件和基础配置可用；如果仍提示项目或 Hooks 未信任，Rules 可能没有注入当前会话，不能把该结果视为完整生效。
+`teamai.cmd doctor` 返回成功，只说明文件和基础配置可用；如果仍提示项目或 Hooks 未信任，Rules 可能没有注入当前会话，不能把该结果视为完整生效。
 
 ## 5. 日常使用规则
 
 开始工作前建议执行：
 
 ```powershell
-teamai status
-teamai pull
-teamai doctor
+teamai.cmd status
+teamai.cmd pull
+teamai.cmd doctor
 ```
 
-必须重新执行 `teamai pull` 的场景：
+必须重新执行 `teamai.cmd pull` 的场景：
 
 - 团队仓库发布了新版本。
 - 修改了 `role` 或 `project`。
@@ -184,10 +183,10 @@ teamai doctor
 切换角色或项目：
 
 ```powershell
-teamai roles set review
-teamai projects set frontend-pc
-teamai pull --force
-teamai doctor
+teamai.cmd roles set frontend-review
+teamai.cmd projects set frontend-pc
+teamai.cmd pull --force
+teamai.cmd doctor
 ```
 
 角色和项目是当前 Git 工作区的 TeamAI 选择。开发与审查需要同时保持不同角色时，使用独立 clone；同一 Git 仓库的 linked worktree 会共享 TeamAI 项目配置，不适合承载不同角色选择。
@@ -198,7 +197,7 @@ teamai doctor
 
 - PC 或桌面管理端：`frontend + frontend-pc`
 - H5 或移动 Web：`frontend + frontend-mobile`
-- 微信原生小程序：`frontend + frontend-mini-program`
+- 微信原生小程序：`frontend-mini-program + frontend-mini-program`
 
 平台必须根据目标仓库的真实运行环境判断，不能根据业务仓库名称猜测。
 
@@ -212,7 +211,7 @@ teamai doctor
 PC 与移动 Web 自检：
 
 ```powershell
-teamai workflow start vibotcode-self-check `
+teamai.cmd workflow start vibotcode-self-check `
   --driver local `
   --inputs '{"task":"描述本次前端改动"}'
 ```
@@ -220,7 +219,7 @@ teamai workflow start vibotcode-self-check `
 微信小程序自检：
 
 ```powershell
-teamai workflow start vibotcode-mini-program-self-check `
+teamai.cmd workflow start vibotcode-mini-program-self-check `
   --driver local `
   --inputs '{"task":"描述本次小程序改动"}'
 ```
@@ -232,15 +231,15 @@ teamai workflow start vibotcode-mini-program-self-check `
 后端开发必须选择实际服务对应的 Project，例如：
 
 ```powershell
-teamai roles set backend
-teamai projects set center-platform
-teamai pull --force
+teamai.cmd roles set backend
+teamai.cmd projects set center-platform
+teamai.cmd pull --force
 ```
 
 启动完整开发 Workflow：
 
 ```powershell
-teamai workflow start vibotcode-backend-development `
+teamai.cmd workflow start vibotcode-backend-development `
   --driver local `
   --inputs '{"task":"实现具体后端需求并说明验收条件"}'
 ```
@@ -250,7 +249,7 @@ teamai workflow start vibotcode-backend-development `
 只执行后端自检：
 
 ```powershell
-teamai workflow start vibotcode-backend-self-check `
+teamai.cmd workflow start vibotcode-backend-self-check `
   --driver local `
   --inputs '{"task":"检查当前工作区后端改动"}'
 ```
@@ -259,24 +258,24 @@ teamai workflow start vibotcode-backend-self-check `
 
 ## 8. 代码审查
 
-正式代码审查必须切换到 `review` 角色，并选择目标平台或后端服务：
+正式代码审查必须切换到对应审查角色，并选择目标平台或后端服务：
 
 ```powershell
-teamai roles set review
-teamai projects set frontend-mobile
-teamai pull --force
+teamai.cmd roles set frontend-review
+teamai.cmd projects set frontend-mobile
+teamai.cmd pull --force
 ```
 
 ### 前端审查
 
 ```powershell
-teamai workflow start vibotcode-frontend-review --driver local
+teamai.cmd workflow start vibotcode-frontend-review --driver local
 ```
 
 也可以显式指定审查范围与需求：
 
 ```powershell
-teamai workflow start vibotcode-frontend-review `
+teamai.cmd workflow start vibotcode-frontend-review `
   --driver local `
   --inputs '{"scope":"origin/pre...HEAD","requirements":"需求与验收条件","context":"补充背景"}'
 ```
@@ -290,7 +289,10 @@ teamai workflow start vibotcode-frontend-review `
 ### 后端审查
 
 ```powershell
-teamai workflow start vibotcode-backend-review `
+teamai.cmd roles set backend-review
+teamai.cmd projects set center-platform
+teamai.cmd pull --force
+teamai.cmd workflow start vibotcode-backend-review `
   --driver local `
   --inputs '{"scope":"当前分支与目标分支差异","requirements":"需求与验收条件","context":"补充背景"}'
 ```
@@ -301,20 +303,41 @@ teamai workflow start vibotcode-backend-review `
 
 ## 9. Workflow 启动约束
 
-TeamAI CLI `0.22.0` 对声明 `invoke` 的 Workflow 存在版本兼容限制，因此当前仓库的 Workflow 不声明自动调用入口。
+官方 TeamAI CLI `0.30.0` 支持 Workflow 的 `invoke` 调用策略和自动生成调用 Skill。
 
 使用规则：
 
-- Workflow 必须由成员在独立终端显式执行。
-- 固定使用 `--driver local`。
-- 不要要求 Codex Agent 在当前受管会话内部代为启动，当前版本会按隐式 `invoke: deny` 拒绝。
+- 写入代码的后端开发 Workflow 使用 `invoke: ask`，需要成员确认后才能从 Agent 会话启动。
+- 自检和代码审查 Workflow 使用 `invoke: allow`，但步骤显式使用 `workspace: read-only`，不允许修改业务代码。
+- 可在独立终端使用 `--driver local` 执行，也可按 `--describe` 输出的说明使用当前 Agent 会话驱动。
 - 正式执行前可使用 `--describe` 检查定义和输入。
 
 示例：
 
 ```powershell
-teamai workflow start --describe vibotcode-frontend-review --driver local
+teamai.cmd workflow start --describe vibotcode-frontend-review --driver local
 ```
+
+在当前 Agent 会话中驱动只读自检或审查：
+
+```powershell
+teamai.cmd workflow start --describe vibotcode-self-check --driver skill
+teamai.cmd workflow start vibotcode-self-check `
+  --driver skill `
+  --inputs '{"task":"描述本次前端改动"}'
+```
+
+后端开发使用 `invoke: ask`。Agent 必须先展示 `--describe` 结果并取得成员确认，确认后才能带 `--confirmed` 启动：
+
+```powershell
+teamai.cmd workflow start --describe vibotcode-backend-development --driver skill
+teamai.cmd workflow start vibotcode-backend-development `
+  --driver skill `
+  --confirmed `
+  --inputs '{"task":"实现具体后端需求并说明验收条件"}'
+```
+
+成员也可以始终在独立终端使用 `--driver local`；此时不需要由 Agent 代为声明确认。
 
 ## 10. 资源证据与适用边界
 
@@ -330,27 +353,27 @@ TeamAI 不替代业务仓库自身的 ESLint、Prettier、commitlint、Maven、�
 
 ## 11. 创建和发布团队资源
 
-TeamAI CLI `0.22.0` 负责发现、校验、分发和发布资源，但没有 `teamai skill create` 这类脚手架命令。
+TeamAI CLI `0.30.0` 负责发现、校验、分发和发布资源，但没有 `teamai.cmd skill create` 这类脚手架命令。
 
 创建资源时需要区分：
 
 - **生成内容**：由成员手工编写，或让 Codex 等 Agent 按团队要求生成。
-- **发布内容**：由 `teamai push` 放入正确 namespace、创建分支并发起 Pull Request。
-- **分发内容**：Pull Request 合并后，由成员执行 `teamai pull` 或通过会话启动 Hooks 获取。
+- **发布内容**：由 `teamai.cmd push` 放入正确 namespace、创建分支并发起 Pull Request。
+- **分发内容**：Pull Request 合并后，由成员执行 `teamai.cmd pull` 或通过会话启动 Hooks 获取。
 
 ### 11.1 查看 CLI 自带的 Skill 指引
 
-`teamai skill` 用于查看已安装 Skill 和 CLI 内置指引，不用于创建团队 Skill：
+`teamai.cmd skill` 用于查看已安装 Skill 和 CLI 内置指引，不用于创建团队 Skill：
 
 ```powershell
-teamai skill list
-teamai skill get core
-teamai skill get core --full
-teamai skill show <skill名称>
-teamai skill path teamai
+teamai.cmd skill list
+teamai.cmd skill get core
+teamai.cmd skill get core --full
+teamai.cmd skill show <skill名称>
+teamai.cmd skill path teamai
 ```
 
-`teamai skill get` 返回的内容与当前 CLI 版本一致，遇到 TeamAI 命令或发布流程问题时应优先读取。
+`teamai.cmd skill get` 返回的内容与当前 CLI 版本一致，遇到 TeamAI 命令或发布流程问题时应优先读取。
 
 ### 11.2 创建一个新 Skill
 
@@ -384,14 +407,14 @@ description: 说明何时使用该 Skill，以及它解决什么问题。
 创建后先检查本地发现结果：
 
 ```powershell
-teamai list skills --source local
-teamai skill show example-skill
+teamai.cmd list skills --source local
+teamai.cmd skill show example-skill
 ```
 
 发布到角色 namespace：
 
 ```powershell
-teamai push `
+teamai.cmd push `
   --skill "$HOME\.codex\skills\example-skill" `
   --role frontend
 ```
@@ -399,7 +422,7 @@ teamai push `
 发布到项目或平台 namespace：
 
 ```powershell
-teamai push `
+teamai.cmd push `
   --skill "$HOME\.codex\skills\example-skill" `
   --project frontend-mini-program
 ```
@@ -407,47 +430,39 @@ teamai push `
 只有所有角色都必须获取的资源才能使用 `--shared`：
 
 ```powershell
-teamai push `
+teamai.cmd push `
   --skill "$HOME\.codex\skills\example-skill" `
   --shared
 ```
 
-`--role`、`--project` 和 `--shared` 表示发布位置，不能凭方便随意选择。本仓库使用 namespace 交集控制能力，发布到错误 namespace 会导致资源不可见、跨领域泄漏或错误组合获得不应出现的上下文。
+`--role`、`--project` 和 `--shared` 表示发布位置，不能凭方便随意选择。官方 `0.30.0` 使用 Role 与 Project 并集；角色用于职责能力，项目用于平台或服务上下文。跨领域资源必须放在对应审查或开发角色 namespace，不能依赖 Project 做交集裁剪。
 
 ### 11.3 创建其他资源
 
 | 资源 | 推荐位置 | 创建与发布方式 |
 | --- | --- | --- |
-| Skill | `skills/<namespace>/<name>/SKILL.md` | 本地创建后 `teamai push --skill`，或在团队仓库分支直接添加 |
+| Skill | `skills/<namespace>/<name>/SKILL.md` | 本地创建后 `teamai.cmd push --skill`，或在团队仓库分支直接添加 |
 | Rule | `rules/<namespace>/<name>.md`，或含 `RULE.md` 的目录 | 在团队仓库分支创建；目录型 Rule 可带 checklist、示例等辅助文件 |
 | Agent | `agents/<namespace>/<name>.yaml` | 在团队仓库分支创建；名称必须与文件名一致 |
 | Workflow | `workflows/<namespace>/<name>.yaml` | 在团队仓库分支创建，并执行解析和 `--describe` 验证 |
 | Doc | `docs/<namespace>/<name>.md` | 在团队仓库分支创建，或通过知识导入流程生成 |
 | Learning | `learnings/<namespace>/<name>.md` | 通过团队经验贡献或导入流程生成，并保留证据来源 |
 
-发布单个已经准备好的文件时，也可以使用：
-
-```powershell
-teamai push `
-  --file .\new-review-workflow.yaml `
-  --path workflows/review/new-review-workflow.yaml
-```
-
-`--file` 会把文件原样放到 `--path` 指定的位置，不能与 `--skill`、`--role`、`--project`、`--shared` 或 `--all` 组合。涉及多个互相依赖的文件、manifest 或 namespace 调整时，应直接在团队仓库独立分支修改并通过 Pull Request 发布。
+官方 `0.30.0` 没有通用的 `teamai.cmd push --file/--path` 命令。除 Skill 外的资源，以及多个互相依赖的文件、manifest 或 namespace 调整，都应直接在团队仓库独立分支修改，完成 branch health 和实际 pull 验证后通过 Pull Request 发布。
 
 ### 11.4 导入已有规则和知识
 
 从本机已安装 Agent 工具导入 Rules：
 
 ```powershell
-teamai import --from-tools
+teamai.cmd import --from-tools
 ```
 
 从本地或远程代码仓库生成代码知识：
 
 ```powershell
-teamai import --dir <本地仓库目录>
-teamai import --from-repo <Git仓库地址>
+teamai.cmd import --dir <本地仓库目录>
+teamai.cmd import --from-repo <Git仓库地址>
 ```
 
 导入结果需要人工确认。自动分类只能作为候选，不能跳过敏感信息检查、业务事实核对和 namespace 选择。
@@ -457,11 +472,11 @@ teamai import --from-repo <Git仓库地址>
 CLI 提供基础维护命令：
 
 ```powershell
-teamai roles add <role-id> `
+teamai.cmd roles add <role-id> `
   --namespaces common,<namespace> `
   --description "角色说明"
 
-teamai projects add <project-id> `
+teamai.cmd projects add <project-id> `
   --namespaces common,<namespace> `
   --name "显示名称" `
   --description "项目说明"
@@ -473,9 +488,9 @@ teamai projects add <project-id> `
 
 ### 11.6 Workflow 自动生成的 Skill
 
-TeamAI 可以为声明 `invoke: allow` 或 `invoke: ask` 的 Workflow 自动生成调用 Skill。该 Skill 由 `teamai pull` 维护，不应手工编辑或使用 `teamai push --skill` 发布；应该修改 Workflow 本身。
+TeamAI `0.30.0` 可以为声明 `invoke: allow` 或 `invoke: ask` 的 Workflow 自动生成调用 Skill。该 Skill 由 `teamai.cmd pull` 维护，不应手工编辑或使用 `teamai.cmd push --skill` 发布；应该修改 Workflow 本身。
 
-本仓库当前锁定 CLI `0.22.0`，现有 Workflow 为兼容该版本没有声明 `invoke`，因此不会生成自动调用 Skill，仍按第 9 节从独立终端显式启动。未来升级 CLI 并启用 `invoke` 前，必须完成兼容性和权限边界复验。
+当前仓库的只读自检和审查 Workflow 使用 `invoke: allow`，后端开发 Workflow 使用 `invoke: ask`。成员可以先执行 `teamai.cmd workflow start --describe <workflow> --driver skill`，按输出决定是否从 Agent 会话启动；也可以始终使用 `--driver local`。
 
 ### 11.7 发布前检查
 
@@ -487,14 +502,16 @@ TeamAI 可以为声明 `invoke: allow` 或 `invoke: ask` 的 Workflow 自动生�
 4. Workflow 能解析，输入、Agent 和输出绑定正确。
 5. 没有凭据、内部地址、个人信息或项目专属业务字段泄漏到通用资源。
 6. 来源和适用边界已记录到 `docs/vibotcode/resource-provenance.md`。
-7. `teamai review --branch <分支> --json` 返回 `0 fail / 0 warn / 0 info`。
+7. `teamai.cmd review --branch <分支> --json` 返回 `fail = 0`，且所有 warning 都已逐条确认。
+
+当前官方 `0.30.0` 会对每个使用 `invoke` 的 Workflow 固定报告一条向后兼容 warning，因为低于 `0.28.0` 的 CLI 会丢弃这类 Workflow。本仓库锁定 `0.30.0`，当前预期结果为 `0 fail / 6 warn / 0 info`；6 条 warning 必须全部只指向本仓库 6 个 Workflow 的 `invoke` 最低版本提醒。出现其他 warning 或任意 fail 时禁止发布。
 
 Pull Request 合并后，消费端执行：
 
 ```powershell
-teamai pull --force
-teamai doctor
-teamai list skills --source repo
+teamai.cmd pull --force
+teamai.cmd doctor
+teamai.cmd list skills --source repo
 ```
 
 ## 12. 常见问题
@@ -502,10 +519,10 @@ teamai list skills --source repo
 ### 没有看到预期的 Skill、Agent 或 Workflow
 
 ```powershell
-teamai roles list
-teamai projects list
-teamai pull --force
-teamai doctor
+teamai.cmd roles list
+teamai.cmd projects list
+teamai.cmd pull --force
+teamai.cmd doctor
 ```
 
 确认 Role 和 Project 属于合法组合，并重新打开 Agent 会话。
@@ -516,15 +533,15 @@ teamai doctor
 
 ### Workflow 报 invoke denied
 
-不要在 Agent 会话内部启动。打开独立 PowerShell 终端，在业务仓库根目录使用 `--driver local` 执行。
+先执行 `teamai.cmd pull --force`，确认当前 Role/Project 能获得该 Workflow，再用 `teamai.cmd workflow start --describe <workflow> --driver skill` 查看启动要求。`invoke: ask` 的 Workflow 必须由成员明确确认后使用 `--confirmed`；也可在独立终端改用 `--driver local`。如果 Workflow 在当前角色下显示 `not runnable`，不要绕过隔离，应切换到合法角色和项目组合。
 
 ### 前端加载了错误的平台规则
 
 重新选择真实运行平台并强制拉取：
 
 ```powershell
-teamai projects set frontend-mobile
-teamai pull --force
+teamai.cmd projects set frontend-mobile
+teamai.cmd pull --force
 ```
 
 ### 团队仓库更新后本地没有变化
@@ -532,8 +549,8 @@ teamai pull --force
 确认 GitHub SSH 权限和远端地址，然后执行：
 
 ```powershell
-teamai pull --force
-teamai status
+teamai.cmd pull --force
+teamai.cmd status
 ```
 
 ### Windows 报 Filename too long
@@ -542,7 +559,7 @@ teamai status
 
 ```powershell
 git config --global core.longpaths true
-teamai pull --force
+teamai.cmd pull --force
 ```
 
 如果失败发生在首次 `init` 的 TeamAI 仓库 clone 阶段，修正配置后重新执行原接入命令。
@@ -557,14 +574,14 @@ teamai pull --force
 4. 后端项目专属知识只进入对应服务 namespace。
 5. 修改 Workflow 后验证解析、输入绑定、Agent 引用和 `--describe`。
 6. 修改角色、项目或 namespace 后验证合法组合与错误组合的实际 pull 结果。
-7. 发布前执行 TeamAI branch health，并确保 `fail / warn / info` 均为 `0`。
+7. 发布前执行 TeamAI branch health，确保 `fail = 0`；warning 只能是已记录的 6 条 `invoke` 最低版本提醒。
 8. 通过 Pull Request 评审后再合入和发布。
 
 分支检查示例：
 
 ```powershell
 cd <vibotcode-teamai目录>
-teamai review --branch <待检查分支> --json
+teamai.cmd review --branch <待检查分支> --json
 ```
 
 修改资源来源、官方依据或参考仓库快照时，同步更新：

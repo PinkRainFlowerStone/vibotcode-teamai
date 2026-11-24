@@ -9,27 +9,43 @@ roles:
       docs: [vibotcode]
       workflows: [common]
   - id: frontend
-    description: VibotCode 前端开发人员，按 PC、移动端或小程序平台交付能力
+    description: VibotCode PC 与移动 Web 前端开发人员
     resources:
-      knowledge: [common, vibotcode, frontend, frontend-pc, frontend-mobile, frontend-mini-program]
-      skills: [common, vibotcode, frontend, frontend-mini-program]
-      agents: [frontend, frontend-mini-program]
-      docs: [vibotcode, frontend, frontend-pc, frontend-mobile, frontend-mini-program]
-      workflows: [frontend, frontend-mini-program]
+      knowledge: [common, vibotcode, frontend]
+      skills: [common, vibotcode, frontend]
+      agents: [common, frontend]
+      docs: [vibotcode, frontend]
+      workflows: [common, frontend]
+  - id: frontend-mini-program
+    description: VibotCode 微信原生小程序开发人员
+    resources:
+      knowledge: [common, vibotcode, frontend, frontend-mini-program]
+      skills: [common, vibotcode, frontend-mini-program]
+      agents: [common, frontend-mini-program]
+      docs: [vibotcode, frontend, frontend-mini-program]
+      workflows: [common, frontend-mini-program]
   - id: backend
     description: VibotCode Java 后端开发人员
     resources:
-      knowledge: [common, vibotcode, backend, center-platform, center-gateway, center-point, center-vip, center-manage, center-mall, center-chain, xxl-job]
+      knowledge: [common, vibotcode, backend]
       skills: [common, vibotcode, backend]
-      agents: [backend]
-      docs: [vibotcode, backend, center-platform, center-gateway, center-point, center-vip, center-manage, center-mall, center-chain, xxl-job]
-      workflows: [backend]
-  - id: review
-    description: 负责 VibotCode 变更审查与质量门禁；平台或后端项目交集决定评审能力
+      agents: [common, backend]
+      docs: [vibotcode, backend]
+      workflows: [common, backend]
+  - id: frontend-review
+    description: 负责 PC、移动 Web 或微信小程序前端代码审查
     resources:
-      knowledge: [common, vibotcode, frontend, frontend-pc, frontend-mobile, frontend-mini-program, backend, review, backend-review, center-platform, center-gateway, center-point, center-vip, center-manage, center-mall, center-chain, xxl-job]
-      skills: [common, vibotcode, review, backend-review]
-      agents: [review, backend-review]
-      docs: [vibotcode, frontend, frontend-pc, frontend-mobile, frontend-mini-program, backend, review, center-platform, center-gateway, center-point, center-vip, center-manage, center-mall, center-chain, xxl-job]
-      workflows: [review, backend-review]
+      knowledge: [common, vibotcode, frontend, review]
+      skills: [common, vibotcode, review]
+      agents: [common, review]
+      docs: [vibotcode, frontend, review]
+      workflows: [common, review]
+  - id: backend-review
+    description: 负责 VibotCode Java 后端代码审查与质量门禁
+    resources:
+      knowledge: [common, vibotcode, backend, backend-review]
+      skills: [common, vibotcode, backend-review]
+      agents: [common, backend-review]
+      docs: [vibotcode, backend]
+      workflows: [common, backend-review]
 

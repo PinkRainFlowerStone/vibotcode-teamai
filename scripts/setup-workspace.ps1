@@ -18,7 +18,7 @@ param(
   )]
   [string]$Project = 'vibotcode',
 
-  [ValidateSet('common', 'frontend', 'backend', 'review')]
+  [ValidateSet('common', 'frontend', 'frontend-mini-program', 'backend', 'frontend-review', 'backend-review')]
   [string]$Role = 'common',
 
   [string]$Agent = 'codex',
@@ -31,6 +31,10 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+$frontendWebPlatforms = @(
+  'frontend-pc',
+  'frontend-mobile'
+)
 $frontendPlatforms = @(
   'frontend-pc',
   'frontend-mobile',
@@ -49,14 +53,16 @@ $backendProjects = @(
 
 $validCombination = switch ($Role) {
   'common' { $Project -eq 'vibotcode' }
-  'review' { $Project -in $frontendPlatforms -or $Project -in $backendProjects }
-  'frontend' { $Project -in $frontendPlatforms }
+  'frontend-review' { $Project -in $frontendPlatforms }
+  'backend-review' { $Project -in $backendProjects }
+  'frontend' { $Project -in $frontendWebPlatforms }
+  'frontend-mini-program' { $Project -eq 'frontend-mini-program' }
   'backend' { $Project -in $backendProjects }
   default { $false }
 }
 
 if (-not $validCombination) {
-  throw "Role '$Role' does not match project '$Project'. Use common + vibotcode for shared context, select frontend-pc/frontend-mobile/frontend-mini-program for frontend work, or select a concrete backend project."
+  throw "Role '$Role' does not match project '$Project'. Use common + vibotcode; frontend + frontend-pc/frontend-mobile; frontend-mini-program + frontend-mini-program; frontend-review + a frontend platform; or backend/backend-review + a concrete backend project."
 }
 
 if ($env:OS -eq 'Windows_NT') {
@@ -69,9 +75,15 @@ if ($env:OS -eq 'Windows_NT') {
 function Invoke-TeamAi {
   param([string[]]$Arguments)
 
-  & teamai @Arguments
+  $command = if ($env:OS -eq 'Windows_NT') {
+    (Get-Command teamai.cmd -ErrorAction Stop).Source
+  } else {
+    (Get-Command teamai -ErrorAction Stop).Source
+  }
+
+  & $command @Arguments
   if ($LASTEXITCODE -ne 0) {
-    throw "teamai $($Arguments -join ' ') failed with exit code $LASTEXITCODE."
+    throw "$command $($Arguments -join ' ') failed with exit code $LASTEXITCODE."
   }
 }
 

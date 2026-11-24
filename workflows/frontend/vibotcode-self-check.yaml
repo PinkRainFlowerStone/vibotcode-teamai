@@ -1,12 +1,14 @@
 schemaVersion: v1alpha1
 name: vibotcode-self-check
 description: Inspect a VibotCode frontend change against an optional implementation task that defaults to an empty string, and produce a verification plan before completion.
+invoke: allow
 inputs:
   task: string
 defaults:
   inputs: { task: "" }
 steps:
   - id: check
+    workspace: read-only
     prompt: |
       Review the current workspace changes as the implementing frontend engineer.
       Implementation task or acceptance context: "{{ inputs.task }}"

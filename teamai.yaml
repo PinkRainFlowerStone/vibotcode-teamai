@@ -5,7 +5,6 @@ provider: github
 language: zh
 autoUpdate: false
 sharing:
-  namespaceMerge: intersect
   recall:
     enabled: true
   docs:

@@ -1,6 +1,7 @@
 schemaVersion: v1alpha1
 name: vibotcode-backend-development
 description: Plan, implement, and verify one scoped VibotCode backend change on an isolated workflow branch.
+invoke: ask
 inputs: { task: string }
 workspace: new
 steps:
@@ -23,6 +24,7 @@ steps:
       risks: [string]
   - id: verify
     needs: [implement]
+    workspace: read-only
     prompt: Verify the implementation for "{{ inputs.task }}" on this workflow branch. Read the final diff and repository build configuration. Run the smallest relevant existing checks from the plan, expanding only when risk justifies it. Do not modify files. Report every command actually run with its result and evidence, every relevant check not run with a reason, residual risks, and whether the branch is ready for human inspection and merge.
     agent: backend-engineer
     output:

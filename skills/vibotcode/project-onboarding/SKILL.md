@@ -16,8 +16,8 @@ description: 进入 VibotCode 工作区或其中一个项目时，快速识别�
    - COLA 多模块：`center-point`、`center-vip`、`center-chain`。
    - 调度平台 admin/core：`xxl-job`。
 5. 前端按运行端选择 TeamAI project；后端选择与仓库同名的 TeamAI project；只做跨项目资料治理时选 `vibotcode`。
-6. 选择匹配角色：前端实现用 `frontend`，后端实现用 `backend`，代码审查用 `review`，仅通用上下文用 `common`。
-7. 用 `teamai roles set <role>`、`teamai projects set <id>`、`teamai pull` 激活交集资源，并用 `teamai roles list`、`teamai projects list` 核对选择。
+6. 选择匹配角色：PC/移动 Web 实现用 `frontend`，微信原生小程序实现用 `frontend-mini-program`，后端实现用 `backend`，前端审查用 `frontend-review`，后端审查用 `backend-review`，仅通用上下文用 `common`。
+7. TeamAI `0.30.0` 会合并 Role 与 Project 资源。Windows 使用 `teamai.cmd roles set <role>`、`teamai.cmd projects set <id>`、`teamai.cmd pull --force` 激活资源，再用 `teamai.cmd roles list`、`teamai.cmd projects list` 核对选择；Linux/macOS 使用对应的 `teamai` 命令。不得把错误组合当作隔离边界。
 8. Web 前端根据任务定位 `views`、`api`、`components`、`hooks`、`stores`、`router`；小程序根据实际框架定位页面清单、分包、组件、服务层、状态和平台配置；后端根据架构定位 controller/adapter、app/service、domain、infrastructure、dbsdk、start 或 admin/core。
 9. 输出项目类型、关键约定、预计改动范围和验证命令后再实现。
 

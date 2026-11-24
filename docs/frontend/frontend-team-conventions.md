@@ -2,7 +2,7 @@
 
 ## Technology baseline
 
-Current verified PC and mobile Web repositories use Vue 3, Vite, Vue Router, Pinia, Axios and SCSS, but exact UI frameworks, versions and build targets remain repository-owned. Mini-program frameworks are not yet standardized or evidenced by a business repository.
+Current verified PC and mobile Web repositories use Vue 3, Vite, Vue Router, Pinia, Axios and SCSS, but exact UI frameworks, versions and build targets remain repository-owned. The mini-program platform baseline targets native WeChat development; no business repository is used to prescribe a single mini-program architecture.
 
 ## Working principles
 
@@ -28,4 +28,10 @@ Prettier, ESLint, commitlint, auto-import and exact aliases remain repository-ow
 ## Verification baseline
 
 Use each repository's scripts rather than a generic command list. Platform selection never implies that a lint, test, build, guardrail or device command exists.
+
+## TeamAI CLI Compatibility
+
+- The supported published CLI contract for this resource set is `teamai-cli@0.30.0` (`v0.30.0`, released 2026-11-11). Skills use standard `SKILL.md` frontmatter; agents use the canonical YAML fields `name`, `description`, `instructions`, optional `tools`, `model` and `targets`; rules and docs remain Markdown resources.
+- Frontend self-check and review workflows use only the published `v1alpha1` workflow schema: declared string inputs, `defaults.inputs`, `invoke: allow`, prompt-step `workspace: read-only`, named agent references and typed output schemas.
+- The published `v0.30.0` contract merges Role and Project namespaces. The `frontend` role supplies PC/mobile Web development, `frontend-mini-program` supplies native mini-program development, and `frontend-review` supplies review; the project supplies only platform context. Do not depend on `sharing.namespaceMerge` or other later `main`-branch behavior.
 

@@ -29,3 +29,9 @@ Classify the runtime before applying platform rules: PC Web, mobile Web, or mini
 
 Each formal finding includes confidence, an exact file location, incremental attribution, rule ID, concrete evidence, impact, and a focused correction. Low-confidence questions are reported separately under pending confirmation. A review with no findings still states remaining test and context gaps.
 
+## TeamAI CLI Compatibility
+
+The published compatibility target is `teamai-cli@0.30.0`. The frontend review workflow therefore uses only the stable workflow contract: `schemaVersion: v1alpha1`, declared inputs with `defaults.inputs`, `invoke: allow`, a read-only prompt workspace, a delivered reviewer agent, and typed output fields. Later `main`-only workflow, resource or namespace behavior must be treated as an observation, not as a stable requirement.
+
+The published `v0.30.0` CLI merges Role and Project namespaces. Frontend and backend review therefore use separate roles (`frontend-review` and `backend-review`), while projects provide only platform or service context. Review isolation must be checked against the manifest and actual pull result; it must not rely on a later `sharing.namespaceMerge` option.
+

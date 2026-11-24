@@ -1,6 +1,7 @@
 schemaVersion: v1alpha1
 name: vibotcode-frontend-review
 description: Review an incremental VibotCode frontend change with optional scope, requirements, and context inputs; each defaults to an empty string so an input-free start keeps the standard origin/pre review behavior.
+invoke: allow
 inputs:
   scope: string
   requirements: string
@@ -9,6 +10,7 @@ defaults:
   inputs: { scope: "", requirements: "", context: "" }
 steps:
   - id: review
+    workspace: read-only
     prompt: |
       Use $frontend-code-review to perform a read-only review of the requested change.
       Requested review scope: "{{ inputs.scope }}"

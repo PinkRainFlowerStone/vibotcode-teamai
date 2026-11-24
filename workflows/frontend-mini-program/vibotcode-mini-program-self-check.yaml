@@ -1,12 +1,14 @@
 schemaVersion: v1alpha1
 name: vibotcode-mini-program-self-check
 description: Inspect a mini-program change against optional task context and produce a platform-aware verification result.
+invoke: allow
 inputs:
   task: string
 defaults:
   inputs: { task: "" }
 steps:
   - id: check
+    workspace: read-only
     prompt: |
       Review the current workspace changes as the implementing mini-program engineer.
       Implementation task or acceptance context: "{{ inputs.task }}"
