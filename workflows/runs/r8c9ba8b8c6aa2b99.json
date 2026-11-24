@@ -3,14 +3,81 @@
   "run": "r8c9ba8b8c6aa2b99",
   "workflow": "teamai-share-learnings",
   "sourceHash": "1c8fa2d9b8c2ff3f836aed3a07b9d4db38233b79270da4867ddda142fd0fd807",
-  "phase": "start",
+  "phase": "end",
   "runMode": "attended",
   "origin": {
     "source": "default",
     "teamaiVersion": "0.30.0"
   },
-  "status": "running",
+  "status": "failed",
   "startedAt": "2026-11-24T11:17:41.805Z",
   "username": "Empathy",
-  "publishedAt": "2026-11-24T11:17:42.029Z"
+  "publishedAt": "2026-11-24T11:28:55.122Z",
+  "driver": {
+    "kind": "skill"
+  },
+  "failure": {
+    "code": "command_failed"
+  },
+  "endedAt": "2026-11-24T11:28:55.114Z",
+  "retainedUntil": "2026-12-08T11:28:55.114Z",
+  "durationMs": 673309,
+  "steps": [
+    {
+      "step": "learning",
+      "pass": 1,
+      "outcome": "success",
+      "runMode": "attended"
+    },
+    {
+      "step": "approve",
+      "answer": {
+        "choice": "yes",
+        "channel": "driver",
+        "agent": true
+      },
+      "pass": 1,
+      "outcome": "success"
+    },
+    {
+      "step": "contribute",
+      "pass": 1,
+      "outcome": "success"
+    },
+    {
+      "step": "contribute[0]",
+      "pass": 1,
+      "outcome": "success",
+      "runMode": "attended",
+      "outcomes": [
+        {
+          "kind": "learning",
+          "id": "visualcomponent-可视化搭建器的模块协议与扩展边界-2026-11-24-0jap66"
+        }
+      ]
+    },
+    {
+      "step": "share-session",
+      "pass": 1,
+      "outcome": "failed"
+    },
+    {
+      "step": "share-session.publish",
+      "pass": 1,
+      "outcome": "failed",
+      "runMode": "attended"
+    },
+    {
+      "step": "share-session.score",
+      "pass": 1
+    }
+  ],
+  "stepCounts": {
+    "total": 7,
+    "succeeded": 4,
+    "failed": 2,
+    "skipped": 1,
+    "cancelled": 0
+  },
+  "iterations": 3
 }
