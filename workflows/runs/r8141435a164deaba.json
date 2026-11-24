@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "v1alpha1",
+  "run": "r8141435a164deaba",
+  "workflow": "teamai-share-session",
+  "sourceHash": "2f5f7828fac7fc733b7ef1597bd4d0dcc95f9c06f0dd00ab27193f336cd428a1",
+  "phase": "end",
+  "runMode": "attended",
+  "origin": {
+    "source": "default",
+    "teamaiVersion": "0.30.0"
+  },
+  "status": "failed",
+  "startedAt": "2026-11-24T11:30:39.963Z",
+  "username": "Empathy",
+  "publishedAt": "2026-11-24T11:31:46.233Z",
+  "driver": {
+    "kind": "skill"
+  },
+  "failure": {
+    "code": "command_failed"
+  },
+  "endedAt": "2026-11-24T11:31:46.224Z",
+  "retainedUntil": "2026-12-08T11:31:46.224Z",
+  "durationMs": 66261,
+  "steps": [
+    {
+      "step": "publish",
+      "pass": 1,
+      "outcome": "failed",
+      "runMode": "attended"
+    },
+    {
+      "step": "score",
+      "pass": 1
+    }
+  ],
+  "stepCounts": {
+    "total": 2,
+    "succeeded": 0,
+    "failed": 1,
+    "skipped": 1,
+    "cancelled": 0
+  },
+  "iterations": 1
+}

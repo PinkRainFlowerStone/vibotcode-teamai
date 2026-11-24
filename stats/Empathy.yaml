@@ -1,61 +1,8 @@
-updatedAt: 2026-11-24T11:29:51.288Z
+updatedAt: 2026-11-24T11:32:25.840Z
 username: Empathy
-skills:
-  project-onboarding:
-    count: 1
-    lastUsed: 2026-11-24T11:05:43.999Z
-  teamai:
-    count: 1
-    lastUsed: 2026-11-24T11:14:40.163Z
+skills: {}
 workflows:
-  runs: 1
+  runs: 2
   succeeded: 0
-  failed: 1
-  totalDurationMs: 673309
-interventions:
-  sessions: 1
-  interrupt: 0
-  toolReject: 0
-  correction: 0
-prompts: 4
-tokens:
-  input: 125752
-  output: 21784
-  cacheRead: 4544512
-  cacheCreation: 0
-daily:
-  2026-11-24:
-    sessionsEnded: 1
-    sessionsSucceeded: 1
-    promptTurns: 4
-    durationMs: 1440904
-    sessionsCorrected: 0
-    pricedRequests: 38
-    costMicros: 2756493
-    cacheReadTokens: 4544512
-    cacheEligibleInputTokens: 4670264
-    priceVersion: litellm-2026-10-31-b264711
-attended:
-  interventions:
-    sessions: 1
-    interrupt: 0
-    toolReject: 0
-    correction: 0
-  prompts: 4
-  tokens:
-    input: 125752
-    output: 21784
-    cacheRead: 4544512
-    cacheCreation: 0
-  daily:
-    2026-11-24:
-      sessionsEnded: 1
-      sessionsSucceeded: 1
-      promptTurns: 4
-      durationMs: 1440904
-      sessionsCorrected: 0
-      pricedRequests: 38
-      costMicros: 2756493
-      cacheReadTokens: 4544512
-      cacheEligibleInputTokens: 4670264
-      priceVersion: litellm-2026-10-31-b264711
+  failed: 2
+  totalDurationMs: 739570
