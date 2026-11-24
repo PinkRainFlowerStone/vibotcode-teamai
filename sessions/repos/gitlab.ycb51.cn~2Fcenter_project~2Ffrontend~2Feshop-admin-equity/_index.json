@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "repoIdentity": "gitlab.ycb51.cn/center_project/frontend/eshop-admin-equity",
+  "updatedAt": "2026-11-24T11:31:41.994Z",
+  "sessions": [
+    {
+      "sessionName": "codex_读取该项目src-visualcomponent组件的设计方式-支持场景-已有组件_20261124",
+      "author": "查查",
+      "platform": "codex",
+      "title": "读取该项目src\\VisualComponent组件的设计方式，支持场景、已有组件。",
+      "cwd": ".",
+      "repoIdentity": "gitlab.ycb51.cn/center_project/frontend/eshop-admin-equity",
+      "messageCount": 111,
+      "createdAt": "2026-11-24T11:05:15.188Z",
+      "updatedAt": "2026-11-24T11:31:11.014Z",
+      "status": "active",
+      "sessionId": "01a20d3b-3a22-7ac1-b541-ecab2e97402a",
+      "commits": {
+        "start": {
+          "commit": "4dd24f607e42908bc54f6542fa2eb44a3f3e0319",
+          "dirty": false
+        },
+        "end": {
+          "commit": "4dd24f607e42908bc54f6542fa2eb44a3f3e0319",
+          "dirty": false
+        }
+      }
+    }
+  ]
+}

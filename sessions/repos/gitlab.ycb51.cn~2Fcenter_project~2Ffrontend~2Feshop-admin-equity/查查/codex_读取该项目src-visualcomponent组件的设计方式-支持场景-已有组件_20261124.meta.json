@@ -1,0 +1,49 @@
+{
+  "agent": {
+    "v": 1,
+    "tool": {
+      "name": "codex"
+    },
+    "model": {
+      "requested": "gpt-5.6-sol",
+      "reported": "gpt-5.6-sol"
+    },
+    "project": {
+      "commit": "4dd24f607e42908bc54f6542fa2eb44a3f3e0319",
+      "dirty": false
+    },
+    "teamai": "0.30.0",
+    "driver": "session"
+  },
+  "origin": {
+    "platform": "codex",
+    "title": "读取该项目src\\VisualComponent组件的设计方式，支持场景、已有组件。",
+    "author": "查查",
+    "cwd": ".",
+    "repoIdentity": "gitlab.ycb51.cn/center_project/frontend/eshop-admin-equity",
+    "createdAt": "2026-11-24T11:05:15.188Z",
+    "sessionId": "01a20d3b-3a22-7ac1-b541-ecab2e97402a"
+  },
+  "migration": {
+    "migratedAt": null,
+    "sourcePlatform": null,
+    "targetPlatform": null,
+    "fidelityScore": 1,
+    "degradations": []
+  },
+  "sync": {
+    "version": 1,
+    "pushedAt": "2026-11-24T11:31:41.985Z"
+  },
+  "status": "active",
+  "commits": {
+    "start": {
+      "commit": "4dd24f607e42908bc54f6542fa2eb44a3f3e0319",
+      "dirty": false
+    },
+    "end": {
+      "commit": "4dd24f607e42908bc54f6542fa2eb44a3f3e0319",
+      "dirty": false
+    }
+  }
+}
